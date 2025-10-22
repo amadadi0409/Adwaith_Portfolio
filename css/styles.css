@@ -209,7 +209,7 @@ body {
     font-family: 'Poppins', sans-serif;
     line-height: 1.6;
     color: var(--text-color);
-    background: var(--background);
+    background: #071029;
     overflow-x: hidden;
 }
 
@@ -294,6 +294,26 @@ body {
     animation: sunset 20s infinite;
 }
 
+/* Seamless gradient transition from hero to about section */
+.hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 300px;
+    background: linear-gradient(to bottom, 
+        rgba(14, 165, 255, 0.1) 0%,
+        rgba(14, 165, 255, 0.06) 20%,
+        rgba(14, 165, 255, 0.03) 40%,
+        rgba(14, 165, 255, 0.015) 60%,
+        rgba(7, 16, 41, 0.5) 80%,
+        rgba(7, 16, 41, 1) 100%
+    );
+    pointer-events: none;
+    z-index: 1;
+}
+
 @keyframes sunset {
     0% { opacity: 0.1; }
     50% { opacity: 0.2; }
@@ -368,13 +388,15 @@ body {
 #about {
     /* prevent accidental transforms from parents affecting perceived movement */
     transform: none;
+    position: relative;
 }
+
 #about .about-content,
 #about .profile-container,
 #about .about-text {
     opacity: 0;
-    transform: translateY(40px) scale(0.995);
-    transition: opacity 700ms cubic-bezier(.2,.9,.25,1), transform 700ms cubic-bezier(.2,.9,.25,1);
+    transform: translateY(60px) scale(0.96);
+    transition: opacity 900ms cubic-bezier(.2,.9,.25,1), transform 900ms cubic-bezier(.2,.9,.25,1);
     will-change: opacity, transform;
 }
 #about.about-in-view .about-content,
@@ -384,14 +406,53 @@ body {
     transform: translateY(0) scale(1);
 }
 #about .profile-container {
-    transition-delay: 120ms;
+    transition-delay: 150ms;
 }
 #about.about-in-view .profile-container {
-    transform: translateY(0) scale(1.03);
+    transform: translateY(0) scale(1.05);
+    animation: popBounce 900ms cubic-bezier(.2,.9,.25,1) forwards;
+}
+
+/* Enhanced pop-in bounce animation */
+@keyframes popBounce {
+    0% { 
+        opacity: 0; 
+        transform: translateY(60px) scale(0.92); 
+    }
+    60% { 
+        opacity: 1; 
+        transform: translateY(-8px) scale(1.06); 
+    }
+    80% { 
+        transform: translateY(3px) scale(1.02); 
+    }
+    100% { 
+        transform: translateY(0) scale(1.05); 
+    }
+}
+
+#about .about-text {
+    transition-delay: 250ms;
+}
+
+#about .section-title {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 700ms cubic-bezier(.2,.9,.25,1), transform 700ms cubic-bezier(.2,.9,.25,1);
+}
+
+#about.about-in-view .section-title {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 @media (prefers-reduced-motion: reduce) {
-    #about .about-content, #about .profile-container, #about .about-text { transition: none !important; transform: none !important; opacity: 1 !important; }
+    #about .about-content, #about .profile-container, #about .about-text, #about .section-title { 
+        transition: none !important; 
+        transform: none !important; 
+        opacity: 1 !important; 
+        animation: none !important;
+    }
 }
 
 .hero-content {
@@ -469,7 +530,7 @@ body {
 
 .about, .experience, .projects, .contact {
     padding: 100px 0;
-    background: var(--background);
+    background: transparent;
 }
 
 /* extra breathing room before About section for stronger visual focus */
@@ -560,22 +621,49 @@ body {
 .impact-metrics {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 2rem;
-    margin: 2rem 0;
-    padding: 1.5rem;
-    background: rgba(255,255,255,0.05);
-    border-radius: 15px;
+    gap: 3rem;
+    margin: 3rem 0;
+    padding: 0;
+    background: transparent;
+    border-radius: 0;
 }
 
 .metric {
     text-align: center;
-    padding: 1rem;
-    border-radius: 10px;
-    transition: transform 0.3s ease;
+    padding: 2rem 1rem;
+    border-radius: 15px;
+    background: linear-gradient(135deg, rgba(14,165,255,0.08) 0%, rgba(124,58,237,0.08) 100%);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.metric::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 15px;
+    padding: 2px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 .metric:hover {
-    transform: translateY(-5px);
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 12px 40px rgba(14,165,255,0.15);
+    border-color: var(--primary-color);
+}
+
+.metric:hover::before {
+    opacity: 1;
 }
 
 .metric-number {

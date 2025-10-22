@@ -36,16 +36,22 @@ window.addEventListener('DOMContentLoaded', () => {
         observer.observe(aboutSection);
     }
 });
-// Fast parallax background scroll effect (clamped before About section to avoid clash)
+// Hero section parallax effect - scrolls up faster
 window.addEventListener('DOMContentLoaded', () => {
-    const about = document.querySelector('#about');
-    const clampBreak = () => (about ? Math.max(0, about.offsetTop - window.innerHeight * 0.25) : Infinity);
+    const hero = document.querySelector('.hero');
+    if (!hero) return;
+    
     const onScroll = () => {
-        const cap = clampBreak();
-        const y = Math.min(window.pageYOffset, cap);
-        const fastScroll = y * 1.5; // 50% faster than normal
-        document.body.style.backgroundPosition = `center -${fastScroll}px`;
+        const scrolled = window.pageYOffset;
+        const heroHeight = hero.offsetHeight;
+        
+        // Only apply parallax while hero is visible
+        if (scrolled < heroHeight) {
+            hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+            hero.style.opacity = Math.max(0, 1 - scrolled / heroHeight);
+        }
     };
+    
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
 });
@@ -60,7 +66,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 obs.unobserve(aboutSection);
             }
         });
-    }, { threshold: 0.25 });
+    }, { threshold: 0.15, rootMargin: '0px 0px -10% 0px' });
     observer.observe(aboutSection);
 });
 // Initialize AOS (Animate On Scroll)
