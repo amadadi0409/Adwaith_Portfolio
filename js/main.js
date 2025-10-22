@@ -98,3 +98,47 @@ window.addEventListener('load', () => {
     const subtitle = document.querySelector('.hero-content p');
     typeWriter('Crafting Digital Excellence Through Code', subtitle, 100);
 });
+
+// Enhanced animations: hero entrance, headline shimmer, and reveal observer
+window.addEventListener('load', () => {
+    // hero entrance
+    const heroContent = document.querySelector('.hero-content');
+    if (heroContent) {
+        heroContent.classList.add('animate-hero');
+        // shimmer only on the main H1 to not overwhelm
+        const h1 = heroContent.querySelector('h1');
+        if (h1) h1.classList.add('shimmer-text');
+    }
+
+    // reveal observer for project cards, timeline items, contact boxes, and skill items
+    const revealSelectors = ['.project-card', '.timeline-item', '.contact-box', '.skill-items span', '.project-tech li'];
+    const revealElements = Array.from(document.querySelectorAll(revealSelectors.join(',')));
+    if (!revealElements.length) return;
+
+    // add base reveal class
+    revealElements.forEach((el, idx) => {
+        el.classList.add('reveal');
+        // store index for group staggers
+        el.style.setProperty('--i', String(idx % 10));
+    });
+
+    const revealObserver = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const el = entry.target;
+                // small stagger per group: if parent is reveal-group, stagger children
+                if (el.parentElement && el.parentElement.classList.contains('reveal-group')) {
+                    Array.from(el.parentElement.children).forEach((child, i) => {
+                        child.style.transitionDelay = (i * 80) + 'ms';
+                        child.classList.add('in-view');
+                    });
+                } else {
+                    el.classList.add('in-view');
+                }
+                obs.unobserve(el);
+            }
+        });
+    }, { root: null, threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+    revealElements.forEach(el => revealObserver.observe(el));
+});
