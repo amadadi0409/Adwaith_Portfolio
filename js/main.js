@@ -1,3 +1,17 @@
+// About section pop-in animation (restores image visibility)
+window.addEventListener('DOMContentLoaded', () => {
+    const aboutSection = document.querySelector('#about');
+    if (!aboutSection) return;
+    const observer = new window.IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                aboutSection.classList.add('about-in-view');
+                obs.unobserve(aboutSection);
+            }
+        });
+    }, { threshold: 0.25 });
+    observer.observe(aboutSection);
+});
 // Initialize AOS (Animate On Scroll)
 AOS.init({
     duration: 1000,

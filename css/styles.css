@@ -353,6 +353,37 @@ body {
     .animate-hero, .shimmer-text, .reveal, .floaty-hover { animation: none !important; transition: none !important; }
 }
 
+/* About section pop-in (distinct from generic reveal)
+   Keeps the section visually stationary until the user reaches it, then pops content in */
+#about {
+    /* prevent accidental transforms from parents affecting perceived movement */
+    transform: none;
+}
+#about .about-content,
+#about .profile-container,
+#about .about-text {
+    opacity: 0;
+    transform: translateY(40px) scale(0.995);
+    transition: opacity 700ms cubic-bezier(.2,.9,.25,1), transform 700ms cubic-bezier(.2,.9,.25,1);
+    will-change: opacity, transform;
+}
+#about.about-in-view .about-content,
+#about.about-in-view .profile-container,
+#about.about-in-view .about-text {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+#about .profile-container {
+    transition-delay: 120ms;
+}
+#about.about-in-view .profile-container {
+    transform: translateY(0) scale(1.03);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #about .about-content, #about .profile-container, #about .about-text { transition: none !important; transform: none !important; opacity: 1 !important; }
+}
+
 .hero-content {
     text-align: center;
     color: var(--light-text);
@@ -429,6 +460,20 @@ body {
 .about, .experience, .projects, .contact {
     padding: 100px 0;
     background: var(--background);
+}
+
+/* extra breathing room before About section for stronger visual focus */
+#about.about {
+    /* doubled spacing for stronger separation */
+    padding-top: 360px;
+    margin-top: 80px;
+}
+
+@media (max-width: 768px) {
+    #about.about {
+        padding-top: 160px;
+        margin-top: 40px;
+    }
 }
 
 .about-content {
