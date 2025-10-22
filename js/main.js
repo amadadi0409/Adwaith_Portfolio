@@ -1,3 +1,41 @@
+// Animated counters for About section metrics
+window.addEventListener('DOMContentLoaded', () => {
+    function animateCounter(id, target, duration, suffix = '') {
+        const el = document.getElementById(id);
+        if (!el) return;
+        let start = 0;
+        const isPlus = String(target).includes('+');
+        const cleanTarget = isPlus ? parseInt(target) : parseInt(target);
+        const increment = Math.ceil(cleanTarget / (duration / 16));
+        function update() {
+            start += increment;
+            if (start >= cleanTarget) {
+                el.textContent = cleanTarget + (isPlus ? '+' : '') + suffix;
+            } else {
+                el.textContent = start + suffix;
+                requestAnimationFrame(update);
+            }
+        }
+        update();
+    }
+    // Only animate if About section is in view
+    const aboutSection = document.querySelector('#about');
+    let animated = false;
+    if (aboutSection) {
+        const observer = new window.IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !animated) {
+                    animateCounter('projects-count', 3, 900);
+                    animateCounter('languages-count', 5, 900, '+');
+                    animateCounter('domains-count', 2, 900);
+                    animated = true;
+                    obs.unobserve(aboutSection);
+                }
+            });
+        }, { threshold: 0.3 });
+        observer.observe(aboutSection);
+    }
+});
 // Fast parallax background scroll effect
 window.addEventListener('scroll', () => {
     // Adjust the multiplier for more/less speed (e.g., 1.5 = 50% faster than normal)

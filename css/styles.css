@@ -1,3 +1,13 @@
+.metric-icon {
+    display: block;
+    margin: 0 auto 0.5rem auto;
+    filter: drop-shadow(0 2px 8px rgba(80,0,255,0.10));
+    transition: transform 0.3s cubic-bezier(.68,-0.55,.27,1.55);
+}
+.metric:hover .metric-icon {
+    transform: scale(1.18) rotate(-8deg);
+    filter: drop-shadow(0 4px 16px var(--primary-color));
+}
 .contact-icons {
     display: flex;
     gap: 1.5rem;
