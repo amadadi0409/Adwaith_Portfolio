@@ -502,61 +502,40 @@ body {
 
 @media (min-width: 768px) {
     .profile-image-wrapper {
-        width: 400px;  /* Larger on desktop */
-        height: 550px;
+        width: 280px;  /* Avatar size on desktop */
+        height: 280px;
     }
 }
 
 .profile-image-wrapper {
     position: relative;
-    width: 300px;
-    height: 400px;  /* Increased height for full body photo */
-    border-radius: 15px;  /* Changed from circular to rounded rectangle */
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
     overflow: hidden;
-    box-shadow: 0 0 30px rgba(14,165,255,0.14);
-    transition: all 0.5s ease;
+    border: 6px solid #fff; /* clean white ring like LinkedIn */
+    box-shadow: 0 0 26px rgba(14,165,255,0.12);
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
 }
 
 .profile-image-wrapper:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 40px rgba(14,165,255,0.18);
+    transform: scale(1.02);
+    box-shadow: 0 0 32px rgba(14,165,255,0.16);
 }
 
 .profile-image {
     width: 100%;
     height: 100%;
-    object-fit: contain;  /* Changed from cover to contain to show full image */
-    transition: all 0.5s ease;
-    background-color: rgba(26, 26, 26, 0.6);  /* Subtle dark background */
+    object-fit: cover; /* crop to avatar */
+    object-position: center 5%; /* bias higher to show face */
+    transform: scale(var(--avatar-zoom, 1.12)); /* moderate zoom */
+    transition: transform 0.35s ease;
+    background: none;
 }
 
-.profile-image-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(45deg, rgba(14,165,255,0.12), rgba(124,58,237,0.10));
-    opacity: 0;
-    transition: all 0.5s ease;
-}
+.profile-image-overlay { display: none; }
 
-.profile-image-wrapper:hover .profile-image-overlay {
-    opacity: 1;
-}
-
-.profile-image-wrapper::after {
-    content: '';
-    position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-    z-index: -1;
-    border-radius: 50%;
-    opacity: 0.5;
-}
+.profile-image-wrapper::after { display: none; }
 
 .about-text {
     color: var(--light-text);

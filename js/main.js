@@ -36,11 +36,18 @@ window.addEventListener('DOMContentLoaded', () => {
         observer.observe(aboutSection);
     }
 });
-// Fast parallax background scroll effect
-window.addEventListener('scroll', () => {
-    // Adjust the multiplier for more/less speed (e.g., 1.5 = 50% faster than normal)
-    const fastScroll = window.pageYOffset * 1.5;
-    document.body.style.backgroundPosition = `center -${fastScroll}px`;
+// Fast parallax background scroll effect (clamped before About section to avoid clash)
+window.addEventListener('DOMContentLoaded', () => {
+    const about = document.querySelector('#about');
+    const clampBreak = () => (about ? Math.max(0, about.offsetTop - window.innerHeight * 0.25) : Infinity);
+    const onScroll = () => {
+        const cap = clampBreak();
+        const y = Math.min(window.pageYOffset, cap);
+        const fastScroll = y * 1.5; // 50% faster than normal
+        document.body.style.backgroundPosition = `center -${fastScroll}px`;
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
 });
 // About section pop-in animation (restores image visibility)
 window.addEventListener('DOMContentLoaded', () => {
@@ -108,17 +115,15 @@ window.addEventListener('scroll', () => {
     hero.style.transform = `translateY(${scrolled * 0.5}px)`;
 });
 
-// Profile image parallax effect
-const profileImage = document.querySelector('.profile-image-wrapper');
+// Profile image parallax effect (opt-in via data-tilt)
+const profileImage = document.querySelector('.profile-image-wrapper[data-tilt]');
 if (profileImage) {
     window.addEventListener('mousemove', (e) => {
         const { left, top, width, height } = profileImage.getBoundingClientRect();
         const x = (e.clientX - left) / width - 0.5;
         const y = (e.clientY - top) / height - 0.5;
-        
         profileImage.style.transform = `perspective(1000px) rotateY(${x * 10}deg) rotateX(${-y * 10}deg) scale(1.05)`;
     });
-    
     profileImage.addEventListener('mouseleave', () => {
         profileImage.style.transform = 'perspective(1000px) rotateY(0) rotateX(0) scale(1)';
     });
