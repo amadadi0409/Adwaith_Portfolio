@@ -1,3 +1,9 @@
+// Fast parallax background scroll effect
+window.addEventListener('scroll', () => {
+    // Adjust the multiplier for more/less speed (e.g., 1.5 = 50% faster than normal)
+    const fastScroll = window.pageYOffset * 1.5;
+    document.body.style.backgroundPosition = `center -${fastScroll}px`;
+});
 // About section pop-in animation (restores image visibility)
 window.addEventListener('DOMContentLoaded', () => {
     const aboutSection = document.querySelector('#about');
