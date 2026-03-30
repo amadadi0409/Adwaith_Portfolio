@@ -1,23 +1,3 @@
-function animateCounter(id, target, duration, suffix = '') {
-    const el = document.getElementById(id);
-    if (!el) return;
-
-    let current = 0;
-    const step = Math.max(1, Math.ceil(target / (duration / 16)));
-
-    function tick() {
-        current += step;
-        if (current >= target) {
-            el.textContent = String(target) + suffix;
-            return;
-        }
-        el.textContent = String(current) + suffix;
-        requestAnimationFrame(tick);
-    }
-
-    tick();
-}
-
 window.addEventListener('DOMContentLoaded', () => {
     if (typeof AOS !== 'undefined') {
         AOS.init({
@@ -29,53 +9,51 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     const nav = document.querySelector('.navbar');
-    const navLinks = document.querySelectorAll('.nav-link');
-    const sections = Array.from(document.querySelectorAll('section[id]'));
+    const navLinks = Array.from(document.querySelectorAll('.nav-link'));
+    const tabSections = Array.from(document.querySelectorAll('.tab-section'));
 
-    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-        anchor.addEventListener('click', (e) => {
-            const targetId = anchor.getAttribute('href');
-            const target = targetId ? document.querySelector(targetId) : null;
-            if (!target) return;
+    if (!tabSections.length) return;
 
-            e.preventDefault();
-            const navOffset = nav ? nav.offsetHeight + 14 : 0;
-            const top = target.getBoundingClientRect().top + window.scrollY - navOffset;
-            window.scrollTo({ top, behavior: 'smooth' });
-        });
-    });
+    const sectionIds = new Set(tabSections.map((section) => section.id));
 
-    const setActiveNav = () => {
-        const navOffset = nav ? nav.offsetHeight + 30 : 80;
-        const scrollPos = window.scrollY + navOffset;
+    const setActiveSection = (id, updateHash = true) => {
+        const targetId = sectionIds.has(id) ? id : 'about';
 
-        let currentId = sections.length ? sections[0].id : '';
-        sections.forEach((section) => {
-            if (scrollPos >= section.offsetTop) {
-                currentId = section.id;
-            }
+        tabSections.forEach((section) => {
+            section.hidden = section.id !== targetId;
         });
 
         navLinks.forEach((link) => {
-            const isActive = link.getAttribute('href') === '#' + currentId;
-            link.classList.toggle('is-active', isActive);
+            link.classList.toggle('is-active', link.getAttribute('href') === '#' + targetId);
         });
+
+        if (updateHash) {
+            history.replaceState(null, '', '#' + targetId);
+        }
+
+        const top = nav ? nav.offsetHeight : 0;
+        window.scrollTo({ top, behavior: 'smooth' });
+
+        if (typeof AOS !== 'undefined') {
+            AOS.refresh();
+        }
     };
 
-    const aboutSection = document.querySelector('#about');
-    if (aboutSection) {
-        const counterObserver = new IntersectionObserver((entries, obs) => {
-            entries.forEach((entry) => {
-                if (!entry.isIntersecting) return;
-                animateCounter('projects-count', 3, 900);
-                animateCounter('languages-count', 5, 900, '+');
-                animateCounter('domains-count', 2, 900);
-                obs.unobserve(entry.target);
-            });
-        }, { threshold: 0.35 });
-        counterObserver.observe(aboutSection);
-    }
+    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener('click', (e) => {
+            const hash = anchor.getAttribute('href') || '';
+            const id = hash.replace('#', '');
+            if (!sectionIds.has(id)) return;
+            e.preventDefault();
+            setActiveSection(id);
+        });
+    });
 
-    setActiveNav();
-    window.addEventListener('scroll', setActiveNav, { passive: true });
+    const initialHash = window.location.hash.replace('#', '');
+    setActiveSection(initialHash || 'about', false);
+
+    window.addEventListener('hashchange', () => {
+        const id = window.location.hash.replace('#', '');
+        setActiveSection(id || 'about', false);
+    });
 });
