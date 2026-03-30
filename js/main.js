@@ -1,213 +1,81 @@
-// Animated counters for About section metrics
-window.addEventListener('DOMContentLoaded', () => {
-    function animateCounter(id, target, duration, suffix = '') {
-        const el = document.getElementById(id);
-        if (!el) return;
-        let start = 0;
-        const isPlus = String(target).includes('+');
-        const cleanTarget = isPlus ? parseInt(target) : parseInt(target);
-        const increment = Math.ceil(cleanTarget / (duration / 16));
-        function update() {
-            start += increment;
-            if (start >= cleanTarget) {
-                el.textContent = cleanTarget + (isPlus ? '+' : '') + suffix;
-            } else {
-                el.textContent = start + suffix;
-                requestAnimationFrame(update);
-            }
+function animateCounter(id, target, duration, suffix = '') {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    let current = 0;
+    const step = Math.max(1, Math.ceil(target / (duration / 16)));
+
+    function tick() {
+        current += step;
+        if (current >= target) {
+            el.textContent = String(target) + suffix;
+            return;
         }
-        update();
+        el.textContent = String(current) + suffix;
+        requestAnimationFrame(tick);
     }
-    // Only animate if About section is in view
-    const aboutSection = document.querySelector('#about');
-    let animated = false;
-    if (aboutSection) {
-        const observer = new window.IntersectionObserver((entries, obs) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting && !animated) {
-                    animateCounter('projects-count', 3, 900);
-                    animateCounter('languages-count', 5, 900, '+');
-                    animateCounter('domains-count', 2, 900);
-                    animated = true;
-                    obs.unobserve(aboutSection);
-                }
-            });
-        }, { threshold: 0.3 });
-        observer.observe(aboutSection);
-    }
-});
-// Hero section parallax effect - scrolls up faster
-window.addEventListener('DOMContentLoaded', () => {
-    const hero = document.querySelector('.hero');
-    if (!hero) return;
-    
-    const onScroll = () => {
-        const scrolled = window.pageYOffset;
-        const heroHeight = hero.offsetHeight;
-        
-        // Only apply parallax while hero is visible
-        if (scrolled < heroHeight) {
-            hero.style.transform = `translateY(${scrolled * 0.5}px)`;
-            hero.style.opacity = Math.max(0, 1 - scrolled / heroHeight);
-        }
-    };
-    
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-});
-// About section pop-in animation (restores image visibility)
-window.addEventListener('DOMContentLoaded', () => {
-    const aboutSection = document.querySelector('#about');
-    if (!aboutSection) return;
-    const observer = new window.IntersectionObserver((entries, obs) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                aboutSection.classList.add('about-in-view');
-                obs.unobserve(aboutSection);
-            }
-        });
-    }, { threshold: 0.15, rootMargin: '0px 0px -10% 0px' });
-    observer.observe(aboutSection);
-});
-// Initialize AOS (Animate On Scroll)
-AOS.init({
-    duration: 1000,
-    once: true,
-    offset: 100
-});
 
-// Custom cursor
-const cursor = document.querySelector('.cursor');
-document.addEventListener('mousemove', (e) => {
-    cursor.style.left = e.clientX + 'px';
-    cursor.style.top = e.clientY + 'px';
-});
-
-// Navbar scroll effect
-const navbar = document.querySelector('.navbar');
-let lastScroll = 0;
-
-window.addEventListener('scroll', () => {
-    const currentScroll = window.pageYOffset;
-    
-    if (currentScroll <= 0) {
-        navbar.style.transform = 'translateY(0)';
-        return;
-    }
-    
-    if (currentScroll > lastScroll) {
-        navbar.style.transform = 'translateY(-100%)';
-    } else {
-        navbar.style.transform = 'translateY(0)';
-    }
-    
-    lastScroll = currentScroll;
-});
-
-// Smooth scroll for navigation links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        document.querySelector(this.getAttribute('href')).scrollIntoView({
-            behavior: 'smooth'
-        });
-    });
-});
-
-// Parallax effect for hero section
-const hero = document.querySelector('.hero');
-window.addEventListener('scroll', () => {
-    const scrolled = window.pageYOffset;
-    hero.style.transform = `translateY(${scrolled * 0.5}px)`;
-});
-
-// Profile image parallax effect (opt-in via data-tilt)
-const profileImage = document.querySelector('.profile-image-wrapper[data-tilt]');
-if (profileImage) {
-    window.addEventListener('mousemove', (e) => {
-        const { left, top, width, height } = profileImage.getBoundingClientRect();
-        const x = (e.clientX - left) / width - 0.5;
-        const y = (e.clientY - top) / height - 0.5;
-        profileImage.style.transform = `perspective(1000px) rotateY(${x * 10}deg) rotateX(${-y * 10}deg) scale(1.05)`;
-    });
-    profileImage.addEventListener('mouseleave', () => {
-        profileImage.style.transform = 'perspective(1000px) rotateY(0) rotateX(0) scale(1)';
-    });
+    tick();
 }
 
-// Interactive elements hover effect
-document.querySelectorAll('.project-card, .nav-link, .cta-primary, .cta-secondary, .profile-image-wrapper').forEach(element => {
-    element.addEventListener('mouseenter', () => {
-        cursor.style.transform = 'translate(-50%, -50%) scale(2)';
-        cursor.style.border = '1px solid var(--primary-color)';
-    });
-    
-    element.addEventListener('mouseleave', () => {
-        cursor.style.transform = 'translate(-50%, -50%) scale(1)';
-        cursor.style.border = '2px solid var(--primary-color)';
-    });
-});
-
-// Dynamic text effect for hero section
-const typeWriter = (text, element, speed = 100) => {
-    let i = 0;
-    element.innerHTML = '';
-    const type = () => {
-        if (i < text.length) {
-            element.innerHTML += text.charAt(i);
-            i++;
-            setTimeout(type, speed);
-        }
-    };
-    type();
-};
-
-// Initialize typing effect
-window.addEventListener('load', () => {
-    const subtitle = document.querySelector('.hero-content p');
-    typeWriter('Crafting Digital Excellence Through Code', subtitle, 100);
-});
-
-// Enhanced animations: hero entrance, headline shimmer, and reveal observer
-window.addEventListener('load', () => {
-    // hero entrance
-    const heroContent = document.querySelector('.hero-content');
-    if (heroContent) {
-        heroContent.classList.add('animate-hero');
-        // shimmer only on the main H1 to not overwhelm
-        const h1 = heroContent.querySelector('h1');
-        if (h1) h1.classList.add('shimmer-text');
+window.addEventListener('DOMContentLoaded', () => {
+    if (typeof AOS !== 'undefined') {
+        AOS.init({
+            duration: 700,
+            once: true,
+            offset: 70,
+            easing: 'ease-out-cubic'
+        });
     }
 
-    // reveal observer for project cards, timeline items, contact boxes, and skill items
-    const revealSelectors = ['.project-card', '.timeline-item', '.contact-box', '.skill-items span', '.project-tech li'];
-    const revealElements = Array.from(document.querySelectorAll(revealSelectors.join(',')));
-    if (!revealElements.length) return;
+    const nav = document.querySelector('.navbar');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = Array.from(document.querySelectorAll('section[id]'));
 
-    // add base reveal class
-    revealElements.forEach((el, idx) => {
-        el.classList.add('reveal');
-        // store index for group staggers
-        el.style.setProperty('--i', String(idx % 10));
+    document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener('click', (e) => {
+            const targetId = anchor.getAttribute('href');
+            const target = targetId ? document.querySelector(targetId) : null;
+            if (!target) return;
+
+            e.preventDefault();
+            const navOffset = nav ? nav.offsetHeight + 14 : 0;
+            const top = target.getBoundingClientRect().top + window.scrollY - navOffset;
+            window.scrollTo({ top, behavior: 'smooth' });
+        });
     });
 
-    const revealObserver = new IntersectionObserver((entries, obs) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const el = entry.target;
-                // small stagger per group: if parent is reveal-group, stagger children
-                if (el.parentElement && el.parentElement.classList.contains('reveal-group')) {
-                    Array.from(el.parentElement.children).forEach((child, i) => {
-                        child.style.transitionDelay = (i * 80) + 'ms';
-                        child.classList.add('in-view');
-                    });
-                } else {
-                    el.classList.add('in-view');
-                }
-                obs.unobserve(el);
+    const setActiveNav = () => {
+        const navOffset = nav ? nav.offsetHeight + 30 : 80;
+        const scrollPos = window.scrollY + navOffset;
+
+        let currentId = sections.length ? sections[0].id : '';
+        sections.forEach((section) => {
+            if (scrollPos >= section.offsetTop) {
+                currentId = section.id;
             }
         });
-    }, { root: null, threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
 
-    revealElements.forEach(el => revealObserver.observe(el));
+        navLinks.forEach((link) => {
+            const isActive = link.getAttribute('href') === '#' + currentId;
+            link.classList.toggle('is-active', isActive);
+        });
+    };
+
+    const aboutSection = document.querySelector('#about');
+    if (aboutSection) {
+        const counterObserver = new IntersectionObserver((entries, obs) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) return;
+                animateCounter('projects-count', 3, 900);
+                animateCounter('languages-count', 5, 900, '+');
+                animateCounter('domains-count', 2, 900);
+                obs.unobserve(entry.target);
+            });
+        }, { threshold: 0.35 });
+        counterObserver.observe(aboutSection);
+    }
+
+    setActiveNav();
+    window.addEventListener('scroll', setActiveNav, { passive: true });
 });
