@@ -201,6 +201,7 @@ img {
 }
 
 .experience,
+.research,
 .projects,
 .contact {
     padding: clamp(3.5rem, 8vw, 6rem) 0;
@@ -377,10 +378,25 @@ img {
 }
 
 .timeline {
-    display: grid;
+    position: relative;
+    display: flex;
+    flex-direction: column;
     gap: 1rem;
     max-width: 980px;
     margin-inline: auto;
+    padding: 0.25rem 0;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    background: linear-gradient(to bottom, rgba(70, 80, 92, 0), rgba(70, 80, 92, 0.2), rgba(70, 80, 92, 0));
+    pointer-events: none;
 }
 
 .timeline-item {
@@ -388,8 +404,7 @@ img {
     border-radius: var(--radius-pill);
     border: 1px solid rgba(70, 80, 92, 0.12);
     padding: 0.9rem 1.35rem;
-    width: fit-content;
-    max-width: 100%;
+    width: min(760px, 82%);
     box-shadow: 0 8px 18px rgba(56, 67, 79, 0.06);
     display: flex;
     align-items: center;
@@ -397,23 +412,19 @@ img {
 }
 
 .timeline-item:nth-child(1) {
-    margin-left: auto;
-    max-width: 64%;
+    align-self: flex-end;
 }
 
 .timeline-item:nth-child(2) {
-    margin-left: 14%;
-    max-width: 60%;
+    align-self: flex-start;
 }
 
 .timeline-item:nth-child(3) {
-    margin-left: 2%;
-    max-width: 70%;
+    align-self: flex-end;
 }
 
 .timeline-item:nth-child(4) {
-    margin-left: 24%;
-    max-width: 54%;
+    align-self: flex-start;
 }
 
 /* company logo badge */
@@ -435,6 +446,11 @@ img {
     object-fit: cover;
     border-radius: 13px;
     display: block;
+}
+
+.company-logo img.neuromorphic-logo {
+    object-position: center 64%;
+    transform: scale(1.08);
 }
 
 .timeline-content {
@@ -472,6 +488,24 @@ img {
 .projects .section-title,
 .contact .section-title {
     margin-bottom: 2.4rem;
+}
+
+.contact .connect-title {
+    position: relative;
+    display: block;
+    margin: 0 auto 3.1rem;
+    width: fit-content;
+    max-width: none;
+    padding: 0 0.2rem;
+    text-align: center;
+    line-height: 1.1;
+    white-space: nowrap;
+    color: #1f232b;
+    text-shadow: 0 2px 12px rgba(31, 35, 43, 0.08);
+}
+
+.contact .connect-title::after {
+    content: none;
 }
 
 .project-grid {
@@ -617,12 +651,16 @@ img {
         grid-template-columns: 230px minmax(0, 1fr);
     }
 
+    .timeline::before {
+        display: none;
+    }
+
     .timeline-item:nth-child(1),
     .timeline-item:nth-child(2),
     .timeline-item:nth-child(3),
     .timeline-item:nth-child(4) {
-        margin-left: 0;
-        max-width: 100%;
+        align-self: stretch;
+        width: 100%;
     }
 }
 
@@ -653,6 +691,12 @@ img {
     .project-grid,
     .contact-social {
         grid-template-columns: 1fr;
+    }
+
+    .contact .connect-title {
+        max-width: 18ch;
+        width: auto;
+        white-space: normal;
     }
 }
 
