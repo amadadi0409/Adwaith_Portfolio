@@ -1,5 +1,6 @@
 :root {
-    --bg: #f3f0ea;
+    --bg: #edf3fb;
+    --section-bg: #edf3fb;
     --bg-soft: #ece7de;
     --surface: #dde4df;
     --surface-strong: #d2dbd4;
@@ -28,7 +29,7 @@ html {
 body {
     font-family: 'Plus Jakarta Sans', sans-serif;
     color: var(--ink);
-    background: radial-gradient(circle at 7% 8%, #f9f7f2 0, #f3f0ea 34%, #f0ece4 100%);
+    background: var(--section-bg);
     line-height: 1.68;
 }
 
@@ -52,7 +53,7 @@ img {
     z-index: 40;
     width: 100%;
     backdrop-filter: blur(12px);
-    background: rgba(243, 240, 234, 0.78);
+    background: rgba(237, 243, 251, 0.84);
     border-bottom: 1px solid var(--border);
     display: flex;
     justify-content: space-between;
@@ -202,6 +203,7 @@ img {
     min-height: 100svh;
     display: flex;
     align-items: center;
+    background: var(--section-bg);
 }
 
 .experience,
@@ -209,6 +211,7 @@ img {
 .projects,
 .contact {
     padding: clamp(3.5rem, 8vw, 6rem) 0;
+    background: var(--section-bg);
 }
 
 .about-content {
@@ -556,10 +559,10 @@ img {
 }
 
 .research-list li {
-    background: var(--surface);
-    border: 1px solid rgba(70, 80, 92, 0.12);
+    background: #f4f8fe;
+    border: 1px solid rgba(126, 150, 181, 0.24);
     border-radius: 1.7rem;
-    box-shadow: 0 8px 18px rgba(56, 67, 79, 0.06);
+    box-shadow: 0 8px 18px rgba(84, 109, 141, 0.08);
     padding: 1rem 1.2rem;
     width: 100%;
     min-height: 210px;
@@ -576,6 +579,8 @@ img {
     letter-spacing: -0.01em;
     color: #2d3440;
     margin-bottom: 0.45rem;
+    line-height: 1.2;
+    min-height: 2.4em;
 }
 
 .interest-blurb {
