@@ -237,7 +237,7 @@ img {
     width: 100%;
     aspect-ratio: 4 / 5;
     object-fit: cover;
-    transform: scale(var(--avatar-zoom, 1.08));
+    transform: scale(var(--avatar-zoom, 1));
     transform-origin: top center;
 }
 
